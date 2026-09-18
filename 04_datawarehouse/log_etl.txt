@@ -1,0 +1,11 @@
+Extraídos 246 registros de cosechas y 30 de ventas (datos crudos)
+Duplicados eliminados en Cosechas: 6
+Filas con cantidad_paquetes nula eliminadas: 17
+Colores normalizados a: Rojo, Amarillo, Blanco, Rosado
+Precios inconsistentes corregidos: 2
+Enriquecimiento: columna 'ingreso_total' calculada
+Fechas normalizadas a tipo datetime
+Dimensiones construidas: DimTiempo, DimCliente, DimColor, DimTamano, DimVivero
+FactVentas construida con 30 filas
+FactCosechas construida con 223 filas (usa DimVivero)
+Carga completada: dimensiones + FactVentas + FactCosechas + cosechas_limpias generados
