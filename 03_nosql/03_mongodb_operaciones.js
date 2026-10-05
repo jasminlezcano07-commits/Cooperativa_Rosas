@@ -6,6 +6,9 @@
 
 use CooperativaRosas;
 
+// Re-ejecutable: se borra la colección para que el CRUD siempre parta de cero
+db.pedidos_whatsapp.drop();
+
 //CREATE 
 db.pedidos_whatsapp.insertMany([
   {
