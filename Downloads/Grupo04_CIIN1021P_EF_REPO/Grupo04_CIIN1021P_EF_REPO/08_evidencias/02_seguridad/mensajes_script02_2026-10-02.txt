@@ -1,0 +1,94 @@
+
+(0 filas afectadas)
+Prueba a esperada: The INSERT permission was denied on the object 'Cosechas', database 'CooperativaRosas', schema 'dbo'.
+
+(0 filas afectadas)
+Prueba b esperada: The DELETE permission was denied on the object 'LogAuditoria', database 'CooperativaRosas', schema 'dbo'.
+Prueba c FALLA: SHOWPLAN permission denied in database 'CooperativaRosas'.
+Prueba d FALLA: SHOWPLAN permission denied in database 'CooperativaRosas'.
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+(2 filas afectadas)
+
+(1 fila afectada)
+Processed 648 pages for database 'CooperativaRosas', file 'CooperativaRosas' on file 1.
+Processed 1 pages for database 'CooperativaRosas', file 'CooperativaRosas_log' on file 1.
+BACKUP DATABASE successfully processed 649 pages in 0.039 seconds (129.845 MB/sec).
+
+(3 filas afectadas)
+
+(1 fila afectada)
+Processed 136 pages for database 'CooperativaRosas', file 'CooperativaRosas' on file 1.
+Processed 1 pages for database 'CooperativaRosas', file 'CooperativaRosas_log' on file 1.
+BACKUP DATABASE WITH DIFFERENTIAL successfully processed 137 pages in 0.023 seconds (46.259 MB/sec).
+The backup set on file 1 is valid.
+The backup set on file 1 is valid.
+Processed 648 pages for database 'CooperativaRosas_TEST', file 'CooperativaRosas' on file 1.
+Processed 1 pages for database 'CooperativaRosas_TEST', file 'CooperativaRosas_log' on file 1.
+RESTORE DATABASE successfully processed 649 pages in 0.024 seconds (210.998 MB/sec).
+Processed 136 pages for database 'CooperativaRosas_TEST', file 'CooperativaRosas' on file 1.
+Processed 1 pages for database 'CooperativaRosas_TEST', file 'CooperativaRosas_log' on file 1.
+RESTORE DATABASE successfully processed 137 pages in 0.013 seconds (81.843 MB/sec).
+
+(3 filas afectadas)
+
+(1 fila afectada)
+
+(10000 filas afectadas)
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+
+(270 filas afectadas)
+Table 'VentasPrueba'. Scan count 1, logical reads 48, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+(1 fila afectada)
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 105 ms.
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'VentasPrueba'. Scan count 1, logical reads 48, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 162 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 3 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+
+(270 filas afectadas)
+Table 'VentasPrueba'. Scan count 1, logical reads 4, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+(1 fila afectada)
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 36 ms.
+
+(1 fila afectada)
+
+(1 fila afectada)
+
+Hora de finalización: 2026-10-02T17:41:03.3431286-05:00

@@ -1,0 +1,6 @@
+Salida de la pestaña Mensajes - 06_sqlserver_tiempos.sql
+SQL Server Express (localhost\SQLEXPRESS), 2026-10-02 (finalizó 20:26 -05:00). CosechasAmpliado: 111500 filas.
+Consulta 1 (SUM por color y tamaño), 4 ejecuciones; la 1.a es calentamiento y se descarta:
+  elapsed time = 57 ms (calentamiento), 63 ms, 57 ms, 53 ms  -> mediana de las 3 últimas = 57 ms
+Consulta 2 (AVG por color), 4 ejecuciones; la 1.a es calentamiento y se descarta:
+  elapsed time = 80 ms (calentamiento), 93 ms, 121 ms, 138 ms -> mediana de las 3 últimas = 121 ms
