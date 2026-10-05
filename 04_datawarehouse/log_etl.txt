@@ -1,11 +1,25 @@
-Extraídos 246 registros de cosechas y 30 de ventas (datos crudos)
-Duplicados eliminados en Cosechas: 6
-Filas con cantidad_paquetes nula eliminadas: 17
-Colores normalizados a: Rojo, Amarillo, Blanco, Rosado
-Precios inconsistentes corregidos: 2
-Enriquecimiento: columna 'ingreso_total' calculada
-Fechas normalizadas a tipo datetime
-Dimensiones construidas: DimTiempo, DimCliente, DimColor, DimTamano, DimVivero
-FactVentas construida con 30 filas
-FactCosechas construida con 223 filas (usa DimVivero)
-Carga completada: dimensiones + FactVentas + FactCosechas + cosechas_limpias generados
+[2026-10-02 03:21:52] INICIO del ETL
+[2026-10-02 03:21:52] Extraídos 246 registros de cosechas y 30 de ventas (datos crudos)
+[2026-10-02 03:21:52] Colores inconsistentes detectados en datos crudos: 46 en cosechas y 0 en ventas
+[2026-10-02 03:21:52] Duplicados eliminados en Cosechas: 6
+[2026-10-02 03:21:52] Filas con cantidad_paquetes nula eliminadas: 17
+[2026-10-02 03:21:52] Colores corregidos: 44 en cosechas y 0 en ventas (normalizados a: Rojo, Amarillo, Blanco, Rosado)
+[2026-10-02 03:21:52] Nota: 2 de los 46 colores inconsistentes estaban en filas descartadas antes (duplicados o cantidad_paquetes nula), por eso no se corrigen
+[2026-10-02 03:21:52] Verificación: 0 colores fuera del catálogo tras la normalización
+[2026-10-02 03:21:52] Precios inconsistentes corregidos: 2
+[2026-10-02 03:21:52] Enriquecimiento: columna 'ingreso_total' calculada
+[2026-10-02 03:21:52] Fechas normalizadas a tipo datetime
+[2026-10-02 03:21:52] Minimización de datos: columna 'trabajador' excluida del Data Warehouse y de cosechas_limpias.csv
+[2026-10-02 03:21:52] Dimensiones construidas: DimTiempo, DimCliente, DimColor, DimTamano, DimVivero
+[2026-10-02 03:21:52] FactVentas construida con 30 filas
+[2026-10-02 03:21:52] FactCosechas construida con 223 filas (usa DimVivero)
+[2026-10-02 03:21:52] Carga a CSV (staging): DimTiempo.csv -> 50 filas
+[2026-10-02 03:21:52] Carga a CSV (staging): DimCliente.csv -> 3 filas
+[2026-10-02 03:21:52] Carga a CSV (staging): DimColor.csv -> 4 filas
+[2026-10-02 03:21:52] Carga a CSV (staging): DimTamano.csv -> 3 filas
+[2026-10-02 03:21:52] Carga a CSV (staging): DimVivero.csv -> 2 filas
+[2026-10-02 03:21:52] Carga a CSV (staging): FactVentas.csv -> 30 filas
+[2026-10-02 03:21:52] Carga a CSV (staging): FactCosechas.csv -> 223 filas
+[2026-10-02 03:21:52] Carga a CSV: ../06_bigdata/cosechas_limpias.csv -> 223 filas (insumo del notebook Spark; única copia)
+[2026-10-02 03:21:52] Los CSV se cargan a SQL Server con el BULK INSERT de 04_ddl_datawarehouse.sql; sus COUNT(*) deben coincidir con las filas de arriba
+[2026-10-02 03:21:52] FIN del ETL - duración: 0.08 s

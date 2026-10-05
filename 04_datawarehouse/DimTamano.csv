@@ -1,4 +1,4 @@
-tamano_cm,id_tamano_dw
-50,1
-60,2
-80,3
+id_tamano_dw,tamano_cm
+1,50
+2,60
+3,80

@@ -1,8 +1,9 @@
 """
 BLOQUE 4: Data Warehouse (metodología Ralph Kimball, bottom-up) + ETL
 Modelo dimensional: esquema estrella
-  - Tabla de hechos: FactVentas
+  - Tablas de hechos: FactVentas (ventas) y FactCosechas (producción)
   - Dimensiones: DimTiempo, DimCliente, DimColor, DimVivero, DimTamano
+    (FactVentas usa DimCliente; FactCosechas usa DimVivero; el resto es compartido)
 
 Este ETL limpia a propósito los problemas de calidad inyectados en
 cosechas_raw.csv / ventas_raw.csv (duplicados, nulos, colores mal
@@ -16,17 +17,29 @@ Por qué Kimball y no Inmon (2 criterios):
      cliente y vivero), que es el enfoque bottom-up de Kimball.
 """
 
+import os
 import pandas as pd
+from datetime import datetime
 
 log = []
 def registrar(paso):
-    log.append(paso)
-    print(paso)
+    # Cada línea del log lleva fecha y hora de ejecución
+    linea = f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {paso}"
+    log.append(linea)
+    print(linea)
+
+inicio_etl = datetime.now()
+registrar("INICIO del ETL")
+
+COLORES_VALIDOS = {"Rojo", "Amarillo", "Blanco", "Rosado"}
 
 # EXTRACT 
 cosechas = pd.read_csv("../00_datos/cosechas_raw.csv")
 ventas = pd.read_csv("../00_datos/ventas_raw.csv")
 registrar(f"Extraídos {len(cosechas)} registros de cosechas y {len(ventas)} de ventas (datos crudos)")
+colores_invalidos_cosechas_crudo = int((~cosechas["color"].isin(COLORES_VALIDOS)).sum())
+colores_invalidos_ventas_crudo = int((~ventas["color"].isin(COLORES_VALIDOS)).sum())
+registrar(f"Colores inconsistentes detectados en datos crudos: {colores_invalidos_cosechas_crudo} en cosechas y {colores_invalidos_ventas_crudo} en ventas")
 
 # TRANSFORM 
 # 1) Eliminar duplicados exactos
@@ -46,9 +59,16 @@ mapa_colores = {
     "Blanc0": "Blanco",
     "rosado": "Rosado", "Rosad0": "Rosado",
 }
+colores_corregidos_cosechas = int((cosechas["color"] != cosechas["color"].replace(mapa_colores)).sum())
+colores_corregidos_ventas = int((ventas["color"] != ventas["color"].replace(mapa_colores)).sum())
 cosechas["color"] = cosechas["color"].replace(mapa_colores)
 ventas["color"] = ventas["color"].replace(mapa_colores)
-registrar("Colores normalizados a: Rojo, Amarillo, Blanco, Rosado")
+registrar(f"Colores corregidos: {colores_corregidos_cosechas} en cosechas y {colores_corregidos_ventas} en ventas (normalizados a: Rojo, Amarillo, Blanco, Rosado)")
+descartados_con_color_malo = colores_invalidos_cosechas_crudo - colores_corregidos_cosechas
+if descartados_con_color_malo:
+    registrar(f"Nota: {descartados_con_color_malo} de los {colores_invalidos_cosechas_crudo} colores inconsistentes estaban en filas descartadas antes (duplicados o cantidad_paquetes nula), por eso no se corrigen")
+assert cosechas["color"].isin(COLORES_VALIDOS).all() and ventas["color"].isin(COLORES_VALIDOS).all(), "Quedaron colores fuera del catálogo"
+registrar("Verificación: 0 colores fuera del catálogo tras la normalización")
 
 # 4) Corregir precios inconsistentes: recalcular según el tamaño real (regla de negocio)
 precio_correcto = {50: 20.00, 60: 23.00, 80: 26.00}
@@ -66,6 +86,12 @@ ventas["fecha"] = pd.to_datetime(ventas["fecha"])
 registrar("Fechas normalizadas a tipo datetime")
 
 cosechas["cantidad_paquetes"] = cosechas["cantidad_paquetes"].astype(int)
+
+# 7) Minimización de datos: la columna 'trabajador' no se usa en ningún KPI, así que no pasa
+#    al Data Warehouse ni al notebook de Spark (trazabilidad, no vigilancia: ver Dilema 1
+#    en 07_reflexion_etica.md). Sigue existiendo en el dato crudo y en SQL Server (Cosechas.id_trabajador).
+cosechas = cosechas.drop(columns=["trabajador"])
+registrar("Minimización de datos: columna 'trabajador' excluida del Data Warehouse y de cosechas_limpias.csv")
 
 # Construcción de dimensiones 
 dim_cliente = ventas[["cliente"]].drop_duplicates().reset_index(drop=True)
@@ -109,20 +135,32 @@ fact_cosechas = cosechas.merge(dim_vivero, on="vivero") \
 
 fact_cosechas = fact_cosechas[[
     "id_cosecha", "id_tiempo_dw", "id_vivero_dw", "id_color_dw", "id_tamano_dw",
-    "cantidad_paquetes", "trabajador"
+    "cantidad_paquetes"
 ]]
 registrar(f"FactCosechas construida con {len(fact_cosechas)} filas (usa DimVivero)")
 
 # LOAD
-dim_cliente.to_csv("DimCliente.csv", index=False)
-dim_color.to_csv("DimColor.csv", index=False)
-dim_tamano.to_csv("DimTamano.csv", index=False)
-dim_vivero.to_csv("DimVivero.csv", index=False)
-dim_tiempo.to_csv("DimTiempo.csv", index=False)
-fact_ventas.to_csv("FactVentas.csv", index=False)
-fact_cosechas.to_csv("FactCosechas.csv", index=False)
-cosechas.to_csv("cosechas_limpias.csv", index=False)
-registrar("Carga completada: dimensiones + FactVentas + FactCosechas + cosechas_limpias generados")
+# Los CSV se escriben con el mismo orden de columnas que el DDL (04_ddl_datawarehouse.sql)
+# y con fin de línea CRLF, para que el BULK INSERT del DDL los cargue en SQL Server.
+tablas_dw = {
+    "DimTiempo":    dim_tiempo[["id_tiempo_dw", "fecha", "anio", "mes", "semana"]],
+    "DimCliente":   dim_cliente[["id_cliente_dw", "cliente"]],
+    "DimColor":     dim_color[["id_color_dw", "color"]],
+    "DimTamano":    dim_tamano[["id_tamano_dw", "tamano_cm"]],
+    "DimVivero":    dim_vivero[["id_vivero_dw", "vivero"]],
+    "FactVentas":   fact_ventas,
+    "FactCosechas": fact_cosechas,
+}
+for nombre, tabla in tablas_dw.items():
+    tabla.to_csv(f"{nombre}.csv", index=False, lineterminator="\r\n")
+    registrar(f"Carga a CSV (staging): {nombre}.csv -> {len(tabla)} filas")
+# cosechas_limpias.csv se escribe SOLO en 06_bigdata/ (es el insumo del notebook Spark; no se duplica aquí)
+os.makedirs("../06_bigdata", exist_ok=True)
+cosechas.to_csv("../06_bigdata/cosechas_limpias.csv", index=False)
+registrar(f"Carga a CSV: ../06_bigdata/cosechas_limpias.csv -> {len(cosechas)} filas (insumo del notebook Spark; única copia)")
+registrar("Los CSV se cargan a SQL Server con el BULK INSERT de 04_ddl_datawarehouse.sql; sus COUNT(*) deben coincidir con las filas de arriba")
+fin_etl = datetime.now()
+registrar(f"FIN del ETL - duración: {(fin_etl - inicio_etl).total_seconds():.2f} s")
 
 with open("log_etl.txt", "w", encoding="utf-8") as f:
     f.write("\n".join(log))

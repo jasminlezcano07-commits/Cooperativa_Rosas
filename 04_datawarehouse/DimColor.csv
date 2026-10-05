@@ -1,5 +1,5 @@
-color,id_color_dw
-Rojo,1
-Amarillo,2
-Blanco,3
-Rosado,4
+id_color_dw,color
+1,Rojo
+2,Amarillo
+3,Blanco
+4,Rosado

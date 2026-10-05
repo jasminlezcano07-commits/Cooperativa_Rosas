@@ -1,4 +1,4 @@
-cliente,id_cliente_dw
-Comercial Rosas SAC,1
-Distribuidora Flor del Valle,2
-Mayorista Chiclayo Norte,3
+id_cliente_dw,cliente
+1,Comercial Rosas SAC
+2,Distribuidora Flor del Valle
+3,Mayorista Chiclayo Norte
