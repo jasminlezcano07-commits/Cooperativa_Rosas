@@ -1,2 +1,0 @@
-Resultado de 04_ddl_datawarehouse.sql (SQL Server Express, 2026-10-02): filas_cargadas = filas_esperadas_log_etl, estado OK en las 7 tablas.
-DimCliente 3 | DimColor 4 | DimTamano 3 | DimTiempo 50 | DimVivero 2 | FactCosechas 223 | FactVentas 30
